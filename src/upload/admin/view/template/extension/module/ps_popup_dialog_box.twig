@@ -284,7 +284,7 @@
 
 		$('button[data-input-id]').on('click', function () {
 			var node = this;
-			var target = $('#' + node.data('input-id'));
+			var target = $('#' + node.getAttribute('data-input-id'));
 
 			$.ajax({
 				url: 'index.php?route=extension/module/ps_popup_dialog_box/generate_cookie_name&store_id={{ store_id }}&user_token={{ user_token }}',
