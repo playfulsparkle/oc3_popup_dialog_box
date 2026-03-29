@@ -29,7 +29,7 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
         }
 
         $data['content'] = isset($setting['content'][$language_id]) ? html_entity_decode($setting['content'][$language_id], ENT_QUOTES, 'UTF-8') : '';
-        $data['bg_image'] = isset($setting['bg_image'][$language_id]['image']) ? $image_url . html_entity_decode($setting['bg_image'][$language_id]['image'], ENT_QUOTES, 'UTF-8') : '';
+        $data['bg_image'] = isset($setting['bg_image'][$language_id]['image']) && $setting['bg_image'][$language_id]['image'] ? $image_url . html_entity_decode($setting['bg_image'][$language_id]['image'], ENT_QUOTES, 'UTF-8') : '';
 
         $positionMap = array(
             'top_left' => array('position' => 'top-left', 'suffix' => 'TopLeft'),
