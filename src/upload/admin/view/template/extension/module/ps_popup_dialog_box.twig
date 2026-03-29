@@ -1,0 +1,270 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+		<div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_layout }}</div>
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#tab-general" data-toggle="tab">{{ tab_general }}</a></li>
+						<li><a href="#tab-support" data-toggle="tab">{{ tab_help_and_support }}</a></li>
+					</ul>
+
+					<div class="tab-content">
+						<div class="tab-pane active" id="tab-general">
+
+							<div class="form-group required">
+								<label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="name" value="{{ name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control" />
+									{% if error_name %}
+									<div class="text-danger">{{ error_name }}</div>
+									{% endif %}
+								</div>
+							</div>
+
+              <ul class="nav nav-tabs" id="language">
+                {% for language in languages %}
+                  <li><a href="#language{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"/> {{ language.name }}</a></li>
+                {% endfor %}
+              </ul>
+              <div class="tab-content">
+								{% for language in languages %}
+                  <div class="tab-pane" id="language{{ language.language_id }}">
+
+										<div class="form-group required">
+                      <label class="col-sm-2 control-label" for="input-content{{ language.language_id }}">{{ entry_content }}</label>
+                      <div class="col-sm-10">
+                        <textarea name="content[{{ language.language_id }}]" placeholder="{{ entry_content }}" id="input-content{{ language.language_id }}" data-toggle="summernote" data-lang="{{ summernote }}" class="form-control">{{ content[language.language_id] ? content[language.language_id] }}</textarea>
+                      </div>
+                    </div>
+
+										<div class="form-group">
+											<label class="col-sm-2 control-label">{{ entry_background_image }}</label>
+											<div class="col-sm-10"><a href="" id="thumb-image{{ language.language_id }}" data-toggle="image" class="img-thumbnail"><img src="{{ bg_image[language.language_id] ? bg_image[language.language_id].thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>
+												<input type="hidden" name="bg_image[{{ language.language_id }}][image]" value="{{ bg_image[language.language_id] ? bg_image[language.language_id].image }}" id="input-image{{ language.language_id }}" />
+											</div>
+										</div>
+
+									</div>
+								{% endfor %}
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-background-color">{{ entry_background_color }}</label>
+								<div class="col-sm-10">
+									<input type="color" name="bg_color" value="{{ bg_color }}" placeholder="{{ entry_background_color }}" id="input-background-color" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-box-shadow-color">{{ entry_box_shadow_color }}</label>
+								<div class="col-sm-10">
+									<input type="color" name="box_shadow_color" value="{{ box_shadow_color }}" placeholder="{{ entry_box_shadow_color }}" id="input-box-shadow-color" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-box-shadow-opacity">{{ entry_box_shadow_opacity }}</label>
+								<div class="col-sm-10">
+									<input type="number" min="0" max="1" step="0.1" name="box_shadow_opacity" value="{{ box_shadow_opacity }}" placeholder="{{ entry_box_shadow_opacity }}" id="input-box-shadow-opacity" class="form-control" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-backdrop-color">{{ entry_backdrop_color }}</label>
+								<div class="col-sm-10">
+									<input type="color" name="backdrop_color" value="{{ backdrop_color }}" placeholder="{{ entry_backdrop_color }}" id="input-backdrop-color" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-backdrop-opacity">{{ entry_backdrop_opacity }}</label>
+								<div class="col-sm-10">
+									<input type="number" min="0" max="1" step="0.1" name="backdrop_opacity" value="{{ backdrop_opacity }}" placeholder="{{ entry_backdrop_opacity }}" id="input-backdrop-opacity" class="form-control" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-border-radius">{{ entry_border_radius }}</label>
+								<div class="col-sm-10">
+									<input type="number" min="0" max="100" name="border_radius" value="{{ border_radius }}" placeholder="{{ entry_border_radius }}" id="input-border-radius" class="form-control" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-close-behavior">{{ entry_close_behavior }}</label>
+								<div class="col-sm-10">
+									<select name="close_behavior" id="input-close-behavior" class="form-control">
+										{% for key, value in close_behaviors %}
+										{% if key == close_behavior %}
+										<option value="{{ key }}" selected="selected">{{ value }}</option>
+										{% else %}
+										<option value="{{ key }}">{{ value }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-close-overlay-click">{{ entry_close_overlay_click }}</label>
+								<div class="col-sm-10">
+									<select name="close_overlay_click" id="input-close-overlay-click" class="form-control">
+										{% if close_overlay_click %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %}
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-position">{{ entry_animation_in }}</label>
+								<div class="col-sm-10">
+									<select name="animation_in" id="input-position" class="form-control">
+										{% for key, value in animations_in %}
+										{% if key == animation_in %}
+										<option value="{{ key }}" selected="selected">{{ value }}</option>
+										{% else %}
+										<option value="{{ key }}">{{ value }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-position">{{ entry_animation_out }}</label>
+								<div class="col-sm-10">
+									<select name="animation_out" id="input-position" class="form-control">
+										{% for key, value in animations_out %}
+										{% if key == animation_out %}
+										<option value="{{ key }}" selected="selected">{{ value }}</option>
+										{% else %}
+										<option value="{{ key }}">{{ value }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-position">{{ entry_position }}</label>
+								<div class="col-sm-10">
+									<select name="position" id="input-position" class="form-control">
+										{% for key, value in positions %}
+										{% if key == position %}
+										<option value="{{ key }}" selected="selected">{{ value }}</option>
+										{% else %}
+										<option value="{{ key }}">{{ value }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-trigger">{{ entry_trigger }}</label>
+								<div class="col-sm-10">
+									<select name="trigger" id="input-trigger" class="form-control">
+										{% for key, value in triggers %}
+										{% if key == trigger %}
+										<option value="{{ key }}" selected="selected">{{ value }}</option>
+										{% else %}
+										<option value="{{ key }}">{{ value }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div id="group-page-load-delay" class="form-group required"{% if trigger != 'page_load' %}style="display: none;"{% endif %}>
+								<label class="col-sm-2 control-label" for="input-page-load-delay">{{ entry_page_load_delay }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="page_load_delay" value="{{ page_load_delay }}" placeholder="{{ entry_page_load_delay }}" id="input-page-load-delay" class="form-control" />
+									{% if error_page_load_delay %}
+									<div class="text-danger">{{ error_page_load_delay }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div id="group-scroll-threshold" class="form-group required"{% if trigger != 'scroll' %}style="display: none;"{% endif %}>
+								<label class="col-sm-2 control-label" for="input-scroll-threshold">{{ entry_scroll_threshold }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="scroll_threshold" value="{{ scroll_threshold }}" placeholder="{{ entry_scroll_threshold }}" id="input-scroll-threshold" class="form-control" />
+									{% if error_scroll_threshold %}
+									<div class="text-danger">{{ error_scroll_threshold }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-2 control-label" for="input-width">{{ entry_width }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="width" value="{{ width }}" placeholder="{{ entry_width }}" id="input-width" class="form-control" />
+									{% if error_width %}
+									<div class="text-danger">{{ error_width }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-2 control-label" for="input-height">{{ entry_height }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="height" value="{{ height }}" placeholder="{{ entry_height }}" id="input-height" class="form-control" />
+									{% if error_height %}
+									<div class="text-danger">{{ error_height }}</div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+								<div class="col-sm-10">
+									<select name="status" id="input-status" class="form-control">
+										{% if status %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %}
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+
+						</div>
+						<div class="tab-pane" id="tab-support">
+
+							<h3>{{ heading_contact }}</h3>
+							{{ text_contact }}
+
+						</div>
+
+					</div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+	<script>
+		$('#language a:first').tab('show');
+
+		$('#input-trigger').on('change', function() {
+				var trigger = $(this).val();
+				$('#group-page-load-delay').toggle(trigger === 'page_load');
+				$('#group-scroll-threshold').toggle(trigger === 'scroll');
+		});
+	</script>
+</div>
+{{ footer }}
