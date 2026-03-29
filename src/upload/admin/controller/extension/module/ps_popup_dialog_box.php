@@ -56,6 +56,12 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
             $data['error_name'] = '';
         }
 
+        if (isset($this->error['cookie_name'])) {
+            $data['error_cookie_name'] = $this->error['cookie_name'];
+        } else {
+            $data['error_cookie_name'] = '';
+        }
+
         if (isset($this->error['page_load_delay'])) {
             $data['error_page_load_delay'] = $this->error['page_load_delay'];
         } else {
@@ -112,6 +118,8 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
 
         $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true);
 
+        $data['user_token'] = $this->session->data['user_token'];
+
         $data['text_layout'] = sprintf($this->language->get('text_layout'), $this->url->link('design/layout', 'user_token=' . $this->session->data['user_token'], true));
 
         if (isset($this->request->get['module_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
@@ -132,6 +140,14 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
             $data['content'] = (array) $module_info['content'];
         } else {
             $data['content'] = [];
+        }
+
+        if (isset($this->request->post['cookie_name'])) {
+            $data['cookie_name'] = $this->request->post['cookie_name'];
+        } elseif (!empty($module_info)) {
+            $data['cookie_name'] = $module_info['cookie_name'];
+        } else {
+            $data['cookie_name'] = $this->generateUniqueCookieName();
         }
 
         if (isset($this->request->post['position'])) {
@@ -360,6 +376,7 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
         $required = array(
             'module_id' => 0,
             'name' => '',
+            'cookie_name' => '',
             'page_load_delay' => 0,
             'scroll_threshold' => 0,
             'width' => 0,
@@ -370,6 +387,16 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
 
         if ((utf8_strlen($post_info['name']) < 3) || (utf8_strlen($post_info['name']) > 64)) {
             $this->error['name'] = $this->language->get('error_name');
+        }
+
+        if (strlen($post_info['cookie_name']) < 3 || strlen($post_info['cookie_name']) > 24) { // 1. Length check (3-24 characters)
+            $this->error['cookie_name'] = $this->language->get('error_cookie_name');
+        } elseif (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $post_info['cookie_name'])) { // 2. Allowed characters: alphanumeric, underscore, hyphen, dot
+            $this->error['cookie_name'] = $this->language->get('error_cookie_name');
+        } elseif (preg_match('/^[0-9]/', $post_info['cookie_name'])) { // 3. Optional: must not start with a digit (recommended for compatibility)
+            $this->error['cookie_name'] = $this->language->get('error_cookie_name');
+        } elseif (strpos($post_info['cookie_name'], '__') === 0) { // 4. Optional: prevent reserved prefixes like "__" (used by some browsers)
+            $this->error['cookie_name'] = $this->language->get('error_cookie_name');
         }
 
         if ($post_info['trigger'] === 'page_load' && $post_info['page_load_delay'] < 0) {
@@ -399,5 +426,66 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
     public function uninstall()
     {
 
+    }
+
+    public function generate_cookie_name()
+    {
+        $json['cookie_name'] = $this->generateUniqueCookieName();
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
+
+    /**
+     * Generate a unique cookie name that passes the validation rules.
+     *
+     * Rules:
+     * - Length: 3-24 characters
+     * - Allowed: a-z, A-Z, 0-9, underscore (_), hyphen (-), dot (.)
+     * - Must not start with a digit
+     * - Must not start with "__" (double underscore)
+     *
+     * @return string A valid, unique cookie name.
+     */
+    private function generateUniqueCookieName()
+    {
+        $allowedChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.';
+        $maxLength = 24;
+        $minRandom = 5; // ensure at least 5 random chars to keep uniqueness
+
+        // Calculate remaining length after prefix
+        $prefix = 'ps_';
+        $prefixLength = strlen($prefix);
+        $randomLength = $maxLength - $prefixLength;
+
+        if ($randomLength < $minRandom) {
+            // Prefix too long; fallback to ignore prefix and generate full random
+            $prefix = '';
+            $prefixLength = 0;
+            $randomLength = $maxLength;
+        }
+
+        // Generate random part
+        $randomPart = '';
+        $charsCount = strlen($allowedChars) - 1;
+        for ($i = 0; $i < $randomLength; $i++) {
+            $randomPart .= $allowedChars[random_int(0, $charsCount)];
+        }
+
+        // Combine prefix + random part
+        $cookieName = $prefix . $randomPart;
+
+        // Ensure no double underscore at start (if prefix is empty or ends with underscore)
+        if (strpos($cookieName, '__') === 0) {
+            // Remove the second underscore or replace
+            $cookieName = substr_replace($cookieName, '', 1, 1);
+        }
+
+        // Final length check - trim if too long (should not happen, but safe)
+        if (strlen($cookieName) > $maxLength) {
+            $cookieName = substr($cookieName, 0, $maxLength);
+        }
+
+        return $cookieName;
     }
 }
