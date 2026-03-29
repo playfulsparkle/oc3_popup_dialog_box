@@ -11,9 +11,9 @@ const output = fs.createWriteStream(outputPath);
 const archive = archiver("zip", { zlib: { level: 4 } });
 
 const jsSrc = path.join(__dirname, "src/upload/catalog/view/javascript/ps_popup_dialog_box.js");
-const cssSrc = path.join(__dirname, "src/upload/catalog/view/stylesheet/ps_popup_dialog_box.css");
+const cssSrc = path.join(__dirname, "src/upload/catalog/view/theme/default/stylesheet/ps_popup_dialog_box.css");
 const jsDest = "upload/catalog/view/javascript/ps_popup_dialog_box.min.js";
-const cssDest = "upload/catalog/view/stylesheet/ps_popup_dialog_box.min.css";
+const cssDest = "upload/catalog/view/theme/default/stylesheet/ps_popup_dialog_box.min.css";
 
 output.on("close", () => {
   console.log(`${archive.pointer()} total bytes`);

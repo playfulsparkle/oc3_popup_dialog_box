@@ -13,7 +13,7 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
         static $module = 0;
 
         if ($module === 0) {
-            $this->document->addStyle('catalog/view/stylesheet/ps_popup_dialog_box.min.css');
+            $this->document->addStyle('catalog/view/theme/default/stylesheet/ps_popup_dialog_box.css');
 
             $this->document->addScript('catalog/view/javascript/ps_popup_dialog_box.min.js');
         }
