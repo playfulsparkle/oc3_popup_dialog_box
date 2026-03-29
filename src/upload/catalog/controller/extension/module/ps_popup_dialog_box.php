@@ -28,7 +28,13 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
             $image_url = $this->config->get('config_url') . 'image/';
         }
 
+        $data['content_url'] = isset($setting['content_url'][$language_id]) ? $setting['content_url'][$language_id] : '';
         $data['content'] = isset($setting['content'][$language_id]) ? html_entity_decode($setting['content'][$language_id], ENT_QUOTES, 'UTF-8') : '';
+
+        if ($data['content_url']) {
+            $data['content'] = strip_tags($data['content']);
+        }
+
         $data['bg_image'] = isset($setting['bg_image'][$language_id]['image']) && $setting['bg_image'][$language_id]['image'] ? $image_url . html_entity_decode($setting['bg_image'][$language_id]['image'], ENT_QUOTES, 'UTF-8') : '';
 
         $positionMap = array(

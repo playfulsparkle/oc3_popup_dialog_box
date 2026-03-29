@@ -62,6 +62,12 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
             $data['error_cookie_name'] = '';
         }
 
+        if (isset($this->error['error_content_url'])) {
+            $data['error_error_content_url'] = (array) $this->error['error_content_url'];
+        } else {
+            $data['error_error_content_url'] = [];
+        }
+
         if (isset($this->error['page_load_delay'])) {
             $data['error_page_load_delay'] = $this->error['page_load_delay'];
         } else {
@@ -140,6 +146,14 @@ class ControllerExtensionModulePsPopupDialogBox extends Controller
             $data['content'] = (array) $module_info['content'];
         } else {
             $data['content'] = [];
+        }
+
+        if (isset($this->request->post['content_url'])) {
+            $data['content_url'] = (array) $this->request->post['content_url'];
+        } elseif (!empty($module_info)) {
+            $data['content_url'] = (array) $module_info['content_url'];
+        } else {
+            $data['content_url'] = [];
         }
 
         if (isset($this->request->post['cookie_name'])) {
